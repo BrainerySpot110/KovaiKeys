@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Property — Kovai Keys</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+
+<body data-bg="form">
+
+    <header class="topbar">
+        <div class="topbar__inner">
+            <a href="/" class="brand">
+                <span class="brand__mark">KK</span>
+                <span class="brand__name">Kovai Keys</span>
+            </a>
+            <nav id="role-nav"></nav>
+        </div>
+    </header>
+
+    <main class="wrap">
+
+        <div class="page-head">
+            <div class="page-head__eyebrow">New Spec Sheet</div>
+            <h1>Add a Property</h1>
+        </div>
+
+        <div class="form-shell">
+            <div class="form-card">
+
+                <form action="/properties" method="post" enctype="multipart/form-data">
+
+                    <div class="field">
+                        <label for="title">Property Title</label>
+                        <input type="text" id="title" name="title" placeholder="e.g. Sunrise Villa, RS Puram" required>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" name="location" placeholder="e.g. Coimbatore" required>
+                        </div>
+                        <div class="field">
+                            <label for="price">Price (₹)</label>
+                            <input type="text" id="price" name="price" placeholder="e.g. 45,00,000" required>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="property_type">Listing Type</label>
+                            <select id="property_type" name="property_type">
+                                <option value="Sale">Sale</option>
+                                <option value="Rent">Rent</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="bedrooms">Bedrooms</label>
+                            <input type="number" id="bedrooms" name="bedrooms" min="0" placeholder="e.g. 3" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" placeholder="What makes this property worth a look?"></textarea>
+                    </div>
+
+                    <div class="field">
+                        <label>Property Image</label>
+                        <label class="upload-drop" for="image">
+                            📷 Click to choose a photo, or drag one here
+                            <input type="file" id="image" name="image" accept="image/*" required>
+                        </label>
+                        <img id="preview" alt="Selected property preview">
+                    </div>
+
+                    <button type="submit" class="btn--block">Save Property</button>
+
+                </form>
+
+            </div>
+
+            <br>
+
+            <a href="/">
+                <button type="button" class="btn--ghost">← Back</button>
+            </a>
+        </div>
+
+    </main>
+
+    <div id="toast-stack"></div>
+
+    <script src="{{ url_for('static', path='script.js') }}"></script>
+</body>
+
+</html>

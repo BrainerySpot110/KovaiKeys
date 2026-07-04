@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Properties — Kovai Keys</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+
+<body data-bg="listings">
+
+    <header class="topbar">
+        <div class="topbar__inner">
+            <a href="/" class="brand">
+                <span class="brand__mark">KK</span>
+                <span class="brand__name">Kovai Keys</span>
+            </a>
+            <nav id="role-nav"></nav>
+        </div>
+    </header>
+
+    <main class="wrap">
+
+        <div class="page-head">
+            <div class="page-head__eyebrow">Listing Register</div>
+            <h1>Available Properties</h1>
+        </div>
+
+        <div class="toolbar">
+            <form action="/search" method="get">
+
+                <div class="field">
+                    <span class="toolbar__label">Location</span>
+                    <input type="text" name="location" placeholder="e.g. Coimbatore">
+                </div>
+
+                <div class="field">
+                    <span class="toolbar__label">Listing Type</span>
+                    <select name="property_type">
+                        <option value="">All Types</option>
+                        <option value="Sale">Sale</option>
+                        <option value="Rent">Rent</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <span class="toolbar__label">Bedrooms</span>
+                    <select name="bedrooms">
+                        <option value="">Any</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4+</option>
+                    </select>
+                </div>
+
+                <button type="submit">🔍 Search</button>
+            </form>
+        </div>
+
+        {% if properties %}
+
+        <p class="results-count">{{ properties|length }} listing{{ 's' if properties|length != 1 else '' }} on file</p>
+
+        <div class="property-grid">
+
+            {% for property in properties %}
+            <div class="spec-card {{ 'spec-card--sold' if property.status == 'Sold' else '' }}" id="card-{{ property.id }}">
+
+                <div class="spec-card__media">
+                    <img src="/uploads/{{ property.image }}" alt="{{ property.title }}">
+                    <span class="spec-card__stamp {{ 'spec-card__stamp--rent' if property.property_type == 'Rent' else 'spec-card__stamp--sale' }}">
+                        {{ 'For Rent' if property.property_type == 'Rent' else 'For Sale' }}
+                    </span>
+                    {% if property.status == 'Sold' %}
+                    <span class="spec-card__sold-banner">{{ 'Rented Out' if property.property_type == 'Rent' else 'Sold' }}</span>
+                    {% endif %}
+                    <span class="spec-card__id">LOT-{{ '%03d'|format(property.id) }}</span>
+                </div>
+
+                <div class="spec-card__body">
+                    <h2 class="spec-card__title">{{ property.title }}</h2>
+                    <p class="spec-card__location">📍 {{ property.location }}</p>
+                    <div class="spec-card__price">₹ {{ property.price }}</div>
+
+                    <ul class="spec-card__meta">
+                        <li>🛏 {{ property.bedrooms }} Bed</li>
+                        <li>🏷 {{ property.property_type }}</li>
+                    </ul>
+
+                    <p class="spec-card__desc">{{ property.description }}</p>
+
+                    <p class="spec-card__broker">☎ Broker: {{ property.broker }}</p>
+
+                    <div class="spec-card__actions">
+                        <a href="/property/{{ property.id }}" class="btn btn--ghost btn--sm">📄 View Details</a>
+                        {% if property.status != 'Sold' %}
+                        <a href="tel:{{ property.broker }}" class="btn btn--sm">📞 Call </a>
+                        {% endif %}
+                    </div>
+
+                    {% if can_manage_properties %}
+                    <div class="spec-card__manage">
+                        <button class="btn btn--ghost btn--sm" onclick="markSold({{ property.id }}, '{{ property.property_type }}')">
+                            {{ '↺ Mark Active' if property.status == 'Sold' else ('🏁 Mark Rented' if property.property_type == 'Rent' else '🏁 Mark Sold') }}
+                        </button>
+                        <button class="btn btn--sm btn--danger" onclick="deleteProperty({{ property.id }})">🗑 Delete</button>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+            <h2>No Properties Found</h2>
+            <p>Try clearing your filters, or check back soon — new listings are added regularly.</p>
+        </div>
+
+        {% endif %}
+
+    </main>
+
+    <footer class="site-footer">
+        Kovai Keys · A listing service for Owners, Brokers, Buyers &amp; Renters
+    </footer>
+
+    <div id="toast-stack"></div>
+
+    <script src="{{ url_for('static', path='script.js') }}"></script>
+</body>
+
+</html>
